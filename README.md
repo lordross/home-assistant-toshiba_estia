@@ -1,38 +1,30 @@
-[![HACS Validate](https://github.com/h4de5/home-assistant-toshiba_ac/actions/workflows/validate.yml/badge.svg)](https://github.com/h4de5/home-assistant-toshiba_ac/actions/workflows/validate.yml)
-[![hassfest Validate](https://github.com/h4de5/home-assistant-toshiba_ac/actions/workflows/hassfest.yml/badge.svg)](https://github.com/h4de5/home-assistant-toshiba_ac/actions/workflows/hassfest.yml)
-[![Github Release](https://img.shields.io/github/release/h4de5/home-assistant-toshiba_ac.svg)](https://github.com/h4de5/home-assistant-toshiba_ac/releases)
-[![Github Commit since](https://img.shields.io/github/commits-since/h4de5/home-assistant-toshiba_ac/latest?sort=semver)](https://github.com/h4de5/home-assistant-toshiba_ac/releases)
-[![Github Open Issues](https://img.shields.io/github/issues/h4de5/home-assistant-toshiba_ac.svg)](https://github.com/h4de5/home-assistant-toshiba_ac/issues)
-[![Github Open Pull Requests](https://img.shields.io/github/issues-pr/h4de5/home-assistant-toshiba_ac.svg)](https://github.com/h4de5/home-assistant-toshiba_ac/pulls)
 
-# Toshiba - Air conditioning
+# Toshiba - Estia Heat pump Home Assistant integration
 
-Toshiba AC integration into home-assistant.io
+Toshiba Estia Heat pump integration into home-assistant.io
+
+This project is a fork from the following repository from [h4de5](https://github.com/h4de5/home-assistant-toshiba_ac/releases) that has the Toshiba AC Home Assistant functionality.
+Also the required package dependency toshiba_ac package is forked in [Toshiba-Estia-control](https://github.com/lordross/Toshiba-Estia-control)
+
+My intention is to eventually merge both forked repositories back once the package is stable enough.
 
 ## Requirements
 
-You need a supported (or compatible) Toshiba AC device with either a built-in Wifi module or an adapter. See [list of compatible devices](#compatible-devices)
+You need a supported (or compatible) Toshiba Estia device with either a built-in Wifi module or an adapter. See [list of compatible devices](#compatible-devices)
 
 ## Installation
 
-### Installation with HACS
+### Manual installation
 
-- In HACS go to integrations and search for 'Toshiba AC'
-- Click `Install`
-- Reboot Home Assistant
-- Follow common integration manual
-
-### or: Manual installation
-
-- Download [latest release](https://github.com/h4de5/home-assistant-toshiba_ac/releases)
+- Download [latest release](https://github.com/lordross/home-assistant-toshiba_estia/releases)
 - Create a folder: `custom_components` in your home-assistant config directory
-- Extract content (the folder `toshiba_ac`) of the release zip into the newly created directory
+- Extract content (the folder `toshiba_estia`) of the release zip into the newly created directory
 - Reboot Home Assistant
 - Follow common integration manual
 
 ### Common manual to activate the integration
 
-- The integration should be available as `Toshiba AC` in the `Add integration dialog`
+- The integration should be available as `Toshiba Estia` in the `Add integration dialog`
 - You need to enter your Toshiba AC account credentials (same as within the app)
 - There is no bounding/registering of new AC units possible with this code - please continue to use the app for this
 
