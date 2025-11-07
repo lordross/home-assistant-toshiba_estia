@@ -7,11 +7,9 @@ from enum import Enum
 import logging
 from typing import Any, Generic, TypeVar
 
-from toshiba_ac.device import (
-    ToshibaAcAirPureIon,
+from toshiba_estia.device import (
     ToshibaAcDevice,
     ToshibaAcFeatures,
-    ToshibaAcMeritA,
     ToshibaAcStatus,
 )
 

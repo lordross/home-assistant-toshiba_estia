@@ -4,14 +4,14 @@ from __future__ import annotations
 
 import logging
 
-from toshiba_ac.device_manager import ToshibaAcDeviceManager
+from toshiba_estia.device_manager import ToshibaAcDeviceManager
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 
 from .const import DOMAIN
 
-PLATFORMS = ["climate", "select", "sensor", "switch"]
+PLATFORMS = ["climate",  "sensor",  "water_heater", "binary_sensor"]
 
 _LOGGER = logging.getLogger(__name__)
 

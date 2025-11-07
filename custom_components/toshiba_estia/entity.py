@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import logging
 
-from toshiba_ac.device import ToshibaAcDevice
+from toshiba_estia.device import ToshibaAcDevice
 
 from homeassistant.helpers.entity import DeviceInfo, Entity
 
@@ -23,10 +23,12 @@ class ToshibaAcEntity(Entity):
         self._device = toshiba_device
         self._attr_device_info = DeviceInfo(
             identifiers={(DOMAIN, self._device.ac_unique_id)},
-            model=self._device.device_id,
+            model=self._device.fcu,
             manufacturer="Toshiba",
             name=self._device.name,
             sw_version=self._device.firmware_version,
+            serial_number=self._device.serial_number,
+            model_id=self._device.fcu,
         )
 
     @property

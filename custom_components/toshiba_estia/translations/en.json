@@ -38,8 +38,29 @@
       }
     },
     "sensor": {
-      "outdoor_temperature": {
-        "name": "Outdoor temperature"
+      "dhw_target_temperature": {
+          "name": "Hot water target"
+      },
+      "twi_temperature": {
+          "name": "Water Heat Exchanger Inlet"
+      },
+      "two_temperature": {
+          "name": "Water Heat Exchanger Outlet"
+      },
+      "tho_temperature": {
+          "name": "Water Heater Outlet"
+      },
+      "to_temperature": {
+          "name": "Outdoor temperature"
+      },
+      "tfi_temperature": {
+          "name": "Floor heating inlet"
+      },
+      "water_flow_rate": {
+          "name": "Water floor rate"
+      },
+      "compressor_status": {
+          "name": "Compressor Status"
       }
     },
     "switch": {
