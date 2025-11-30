@@ -93,7 +93,7 @@ async def async_setup_entry(hass, config_entry, async_add_devices):
 
     devices: list[ToshibaAcDevice] = await device_manager.get_devices()
     for device in devices:
-        _LOGGER.debug("device %s", device)
+        _LOGGER.debug(f"Adding sensors for device '{device}'")
 
         for sensor in temperature_sensors_array:
             sensor_entity = ToshibaTempSensor(sensor, device)
@@ -106,6 +106,8 @@ async def async_setup_entry(hass, config_entry, async_add_devices):
         for sensor in enum_sensors_array:
             sensor_entity = ToshibaEnumSensor(sensor, device)
             new_devices.append(sensor_entity)
+
+        new_devices.append(ToshibaPowerSensor(device))
 
     # If we have any new devices, add them
     if new_devices:
