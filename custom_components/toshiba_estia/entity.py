@@ -38,6 +38,7 @@ class ToshibaAcEntity(Entity):
             self._device.ac_id
             and self._device.amqp_api.sas_token
             and self._device.http_api.access_token
+            and self._device.is_online
         )
 
 
