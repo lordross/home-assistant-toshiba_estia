@@ -121,6 +121,7 @@ class ToshibaHeatingZone(ToshibaAcStateEntity, ClimateEntity):
         available_modes.append(HVACMode.HEAT)
         available_modes.append(HVACMode.COOL)
         available_modes.append(HVACMode.AUTO)
+        return available_modes
 
     async def async_set_hvac_mode(self, hvac_mode: HVACMode) -> None:
         """Set new target hvac mode."""
