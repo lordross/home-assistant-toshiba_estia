@@ -9,10 +9,10 @@
   "iot_class": "cloud_push",
   "issue_tracker": "https://github.com/lordross/home-assistant-toshiba_estia/issues",
   "requirements": [
-    "toshiba-estia@git+https://github.com/lordross/Toshiba-Estia-control@estia-0.1.0",
+    "toshiba-estia@git+https://github.com/lordross/Toshiba-Estia-control@v0.1.2",
     "janus==1.0.0"
   ],
   "ssdp": [],
-  "version": "2025.12.0",
+  "version": "2025.12.1",
   "zeroconf": []
 }

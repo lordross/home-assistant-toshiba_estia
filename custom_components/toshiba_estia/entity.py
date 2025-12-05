@@ -28,7 +28,7 @@ class ToshibaAcEntity(Entity):
             name=self._device.name,
             sw_version=self._device.firmware_version,
             serial_number=self._device.serial_number,
-            model_id=self._device.fcu,
+            model_id=self._device.model_id,
         )
 
     @property
@@ -36,7 +36,6 @@ class ToshibaAcEntity(Entity):
         """Return True if entity is available."""
         return bool(
             self._device.ac_id
-            and self._device.amqp_api.sas_token
             and self._device.http_api.access_token
             and self._device.is_online
         )
