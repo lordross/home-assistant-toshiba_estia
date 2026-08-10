@@ -11,6 +11,7 @@ from toshiba_estia.device.properties import (
     ToshibaAcMode,
     ToshibaAcStatus,
     EstiaCompressorStatus,
+    EstiaWaterMode,
 )
 
 from homeassistant.components.sensor import (
@@ -30,6 +31,7 @@ COMPRESSOR_STATUS_OPTIONS = [
     "Off",
     "Hot Water",
     "Heat",
+    "Cool",
 ]
 
 COMPRESSOR_STATUS_TO_MODE_STRING = {
@@ -260,4 +262,10 @@ class ToshibaEnumSensor(ToshibaAcStateEntity, SensorEntity):
         """Return the value reported by the sensor."""
         state = getattr(self._device, self.init_parameters.value)
         logging.debug(f"Compressor state is: {state}")
-        return COMPRESSOR_STATUS_TO_MODE_STRING[(state)]
+        label = COMPRESSOR_STATUS_TO_MODE_STRING[state]
+        # The upstream library reports HEAT whenever the compressor is active
+        # for space conditioning, even when cooling. Cross-reference the water
+        # mode to distinguish cooling from heating.
+        if label == "Heat" and self._device.mode == EstiaWaterMode.COOL:
+            return "Cool"
+        return label
