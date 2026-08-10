@@ -2,16 +2,20 @@
 
 from __future__ import annotations
 
+import asyncio
 import logging
 
 from toshiba_estia.device_manager import ToshibaAcDeviceManager
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
+from homeassistant.exceptions import ConfigEntryNotReady
 
 from .const import DOMAIN
 
 PLATFORMS = ["climate",  "sensor",  "water_heater", "binary_sensor"]
+
+SETUP_TIMEOUT = 60  # seconds — Azure IoT MQTT negotiation needs time at startup
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -38,12 +42,8 @@ def add_sas_token_updated_callback_for_entry(
 
 
 async def async_setup(hass: HomeAssistant, config: dict):
-    """Set up the Hello World component."""
-    # Ensure our name space for storing objects is a known type. A dict is
-    # common/preferred as it allows a separate instance of your class for each
-    # instance that has been created in the UI.
+    """Set up the Toshiba Estia component."""
     hass.data.setdefault(DOMAIN, {})
-
     return True
 
 
@@ -57,25 +57,43 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     )
 
     try:
-        await device_manager.connect()
-    except Exception:
-        _LOGGER.warning("Initial connection failed, trying to get new sas_token...")
-        # If it fails to connect, try to get a new sas_token
+        async with asyncio.timeout(SETUP_TIMEOUT):
+            await device_manager.connect()
+    except Exception as ex:
+        _LOGGER.warning("Initial connection failed: %s. Trying new sas_token...", ex)
+        try:
+            await device_manager.shutdown()
+        except Exception:
+            pass
         device_manager = ToshibaAcDeviceManager(
             entry.data["username"], entry.data["password"], entry.data["device_id"]
         )
-
         try:
-            new_sas_token = await device_manager.connect()
-
-            _LOGGER.info("Successfully got new sas_token!")
-
-            # Save new sas_token
+            async with asyncio.timeout(SETUP_TIMEOUT):
+                new_sas_token = await device_manager.connect()
             new_data = {**entry.data, "sas_token": new_sas_token}
             hass.config_entries.async_update_entry(entry, data=new_data)
+        except Exception as ex2:
+            try:
+                await device_manager.shutdown()
+            except Exception:
+                pass
+            raise ConfigEntryNotReady(
+                "Toshiba cloud not reachable, will retry"
+            ) from ex2
+
+    # Pre-fetch devices so platform setup doesn't make additional cloud calls.
+    try:
+        async with asyncio.timeout(SETUP_TIMEOUT):
+            await device_manager.get_devices()
+    except Exception as ex:
+        try:
+            await device_manager.shutdown()
         except Exception:
-            _LOGGER.warning("Connection failed on second try, aborting!")
-            return False
+            pass
+        raise ConfigEntryNotReady(
+            "Failed to fetch devices, will retry"
+        ) from ex
 
     add_sas_token_updated_callback_for_entry(hass, entry, device_manager)
 
