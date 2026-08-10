@@ -14,7 +14,15 @@ from homeassistant.core import HomeAssistant
 from homeassistant.data_entry_flow import FlowResult
 from homeassistant.exceptions import HomeAssistantError
 
-from .const import DOMAIN
+from .const import (
+    CONF_ZONE1_MAX_TEMP,
+    CONF_ZONE1_MIN_TEMP,
+    CONF_ZONE2_MAX_TEMP,
+    CONF_ZONE2_MIN_TEMP,
+    DEFAULT_ZONE_MAX_TEMP,
+    DEFAULT_ZONE_MIN_TEMP,
+    DOMAIN,
+)
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -67,6 +75,13 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     CONNECTION_CLASS = config_entries.CONN_CLASS_CLOUD_POLL
 
+    @staticmethod
+    def async_get_options_flow(
+        config_entry: config_entries.ConfigEntry,
+    ) -> config_entries.OptionsFlow:
+        """Return options flow."""
+        return ToshibaOptionsFlow(config_entry)
+
     async def async_step_user(
         self, user_input: dict[str, Any] | None = None
     ) -> FlowResult:
@@ -101,3 +116,73 @@ class CannotConnect(HomeAssistantError):
 
 class InvalidAuth(HomeAssistantError):
     """Error to indicate there is invalid auth."""
+
+
+class ToshibaOptionsFlow(config_entries.OptionsFlow):
+    """Handle Toshiba options."""
+
+    def __init__(self, config_entry: config_entries.ConfigEntry) -> None:
+        self.config_entry = config_entry
+
+    async def async_step_init(
+        self, user_input: dict[str, Any] | None = None
+    ) -> FlowResult:
+        """Manage the options."""
+        if user_input is not None:
+            if user_input[CONF_ZONE1_MIN_TEMP] > user_input[CONF_ZONE1_MAX_TEMP]:
+                return self.async_show_form(
+                    step_id="init",
+                    data_schema=self._schema(user_input),
+                    errors={"base": "zone1_invalid_range"},
+                )
+            if user_input[CONF_ZONE2_MIN_TEMP] > user_input[CONF_ZONE2_MAX_TEMP]:
+                return self.async_show_form(
+                    step_id="init",
+                    data_schema=self._schema(user_input),
+                    errors={"base": "zone2_invalid_range"},
+                )
+            return self.async_create_entry(
+                title="",
+                data={
+                    CONF_ZONE1_MIN_TEMP: int(user_input[CONF_ZONE1_MIN_TEMP]),
+                    CONF_ZONE1_MAX_TEMP: int(user_input[CONF_ZONE1_MAX_TEMP]),
+                    CONF_ZONE2_MIN_TEMP: int(user_input[CONF_ZONE2_MIN_TEMP]),
+                    CONF_ZONE2_MAX_TEMP: int(user_input[CONF_ZONE2_MAX_TEMP]),
+                },
+            )
+
+        options = self.config_entry.options
+        defaults = {
+            CONF_ZONE1_MIN_TEMP: int(
+                options.get(CONF_ZONE1_MIN_TEMP, DEFAULT_ZONE_MIN_TEMP)
+            ),
+            CONF_ZONE1_MAX_TEMP: int(
+                options.get(CONF_ZONE1_MAX_TEMP, DEFAULT_ZONE_MAX_TEMP)
+            ),
+            CONF_ZONE2_MIN_TEMP: int(
+                options.get(CONF_ZONE2_MIN_TEMP, DEFAULT_ZONE_MIN_TEMP)
+            ),
+            CONF_ZONE2_MAX_TEMP: int(
+                options.get(CONF_ZONE2_MAX_TEMP, DEFAULT_ZONE_MAX_TEMP)
+            ),
+        }
+        return self.async_show_form(step_id="init", data_schema=self._schema(defaults))
+
+    @staticmethod
+    def _schema(current: dict[str, int]) -> vol.Schema:
+        return vol.Schema(
+            {
+                vol.Required(CONF_ZONE1_MIN_TEMP, default=current[CONF_ZONE1_MIN_TEMP]): vol.All(
+                    vol.Coerce(int), vol.Range(min=7, max=40)
+                ),
+                vol.Required(CONF_ZONE1_MAX_TEMP, default=current[CONF_ZONE1_MAX_TEMP]): vol.All(
+                    vol.Coerce(int), vol.Range(min=7, max=40)
+                ),
+                vol.Required(CONF_ZONE2_MIN_TEMP, default=current[CONF_ZONE2_MIN_TEMP]): vol.All(
+                    vol.Coerce(int), vol.Range(min=7, max=40)
+                ),
+                vol.Required(CONF_ZONE2_MAX_TEMP, default=current[CONF_ZONE2_MAX_TEMP]): vol.All(
+                    vol.Coerce(int), vol.Range(min=7, max=40)
+                ),
+            }
+        )

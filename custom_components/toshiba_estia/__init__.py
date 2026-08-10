@@ -13,7 +13,7 @@ from homeassistant.exceptions import ConfigEntryNotReady
 
 from .const import DOMAIN
 
-PLATFORMS = ["climate",  "sensor",  "water_heater", "binary_sensor"]
+PLATFORMS = ["climate", "sensor", "water_heater", "binary_sensor", "switch"]
 
 SETUP_TIMEOUT = 60  # seconds — Azure IoT MQTT negotiation needs time at startup
 

@@ -18,6 +18,23 @@
       }
     }
   },
+  "options": {
+    "error": {
+      "zone1_invalid_range": "Zone 1 minimum temperature must be lower than or equal to maximum",
+      "zone2_invalid_range": "Zone 2 minimum temperature must be lower than or equal to maximum"
+    },
+    "step": {
+      "init": {
+        "title": "Zone temperature limits",
+        "data": {
+          "zone1_min_temp": "Zone 1 minimum temperature",
+          "zone1_max_temp": "Zone 1 maximum temperature",
+          "zone2_min_temp": "Zone 2 minimum temperature",
+          "zone2_max_temp": "Zone 2 maximum temperature"
+        }
+      }
+    }
+  },
   "entity": {
     "select": {
       "cdu_silent": {
@@ -64,6 +81,9 @@
       }
     },
     "switch": {
+      "dhw_booster": {
+        "name": "Hot water booster"
+      },
       "8_degc_mode": {
         "name": "8 °C mode"
       },
